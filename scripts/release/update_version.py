@@ -29,10 +29,15 @@ def update_changelog(version):
     update_file(filename,text_to_search,text_to_replace)
 
 def update_version_file(version):
+    result = re.search('^v(\d+).(\d+).(\d+)',version)
+    major_version = result.group(1)
+    minor_version = result.group(2)
+    patch_version = result.group(3)
+    version_for_file = version +'*'+version+'*'+major_version+'*'+minor_version+'*'+patch_version
     # Open the file for reading
     with open("VERSION", "w") as file:
         # Write the updated contents to the file
-        file.write(version)
+        file.write(version_for_file)
 
 def update_document_version_file(file_path, version):
     # Open the file for reading
@@ -49,8 +54,8 @@ if __name__ == "__main__":
     version = args.version
     match_found = bool(re.match("^[v]{1}\d{1,2}\.\d{1,2}\.\d{1,3}", version))
     if match_found == False:
-        raise Exception("Error version stringplease format it to vx.x.x")
+        raise Exception("Error in version string, please format it to vx.x.x")
     else:
         update_changelog(version[1:])
         update_version_file(version)
-        update_document_version_file("doc/sphinx/version.py",version)
+        update_document_version_file("doc/sphinx/ifm3dpy_version.py",version)
