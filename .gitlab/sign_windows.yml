@@ -1,12 +1,16 @@
 sign_windows:
   extends: .sign:ev
   stage: sign
-  variables:
-    SIGN_FILE: $CI_PROJECT_DIR/ifm3d_installer/ifm3d_windows_1.3.3.exe
   needs:
     - job: build:windows_2019
       artifacts: true
-    
+  before_script:
+    - $SIGN_FILE = Get-ChildItem -Path '$CI_PROJECT_DIR/ifm3d_installer/' -Filter 'ifm3d_windows_*.exe' | Select-Object -ExpandProperty FullName
+  artifacts:
+    name: "ifm3d_installer_signed"
+    paths:
+      - $CI_PROJECT_DIR/ifm3d_installer/ifm3d_windows_*.exe
+
 include:
   - project: "ifm-public/standard/gitlab-ci-yml-templates"
     file: "templates/service-codeSigning/public_signing.yml"
